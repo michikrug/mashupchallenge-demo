@@ -88,8 +88,9 @@
         },
         currentColor: {
           type: String,
-          reflectToAttribute: true
-          //readOnly: true
+          reflectToAttribute: true,
+          notify: true,
+          readOnly: true
         },
         text_en: {
           type: String,
@@ -150,40 +151,40 @@
         rgb_sums[0] = Math.floor(rgb_sums[0]/pixel_count);
         rgb_sums[1] = Math.floor(rgb_sums[1]/pixel_count);
         rgb_sums[2] = Math.floor(rgb_sums[2]/pixel_count);
-        this.currentColor = 'rgb(' + rgb_sums.join(',') + ')';
+        this._setCurrentColor('rgb(' + rgb_sums.join(',') + ')');
         this.style.background = this.currentColor;
       },
       youtubeUrlChanged: function() {
-        var _this = this, videoUrl = this.youtubeUrl, videoId;
+        var videoUrl = this.youtubeUrl, videoId;
         var hasYouTubeId = videoUrl.match(/v\=[a-z0-9-_]+/i);
         if (hasYouTubeId !== null) videoId = hasYouTubeId[0].substr(2);
         YoutubeVideo(videoId, function(video) {
           if (video.status === 'fail') return;
-          
-          var ts = Polymer.dom(_this).querySelectorAll('track,source');
+
+          var ts = Polymer.dom(this).querySelectorAll('track,source');
           for (var i = 0; i < ts.length; i++) {
-            Polymer.dom(_this).removeChild(ts[i]);
+            Polymer.dom(this).removeChild(ts[i]);
           }
 
           var v = document.createElement('video');
           v.id = 'video';
           v.controls = true;
-          Polymer.dom(_this.root).replaceChild(v, _this.$.video);
-          _this.$.video = v;
+          Polymer.dom(this.root).replaceChild(v, this.$.video);
+          this.$.video = v;
           var mp4 = video.getSource("video/mp4", "high");
           if (mp4) {
             var s = document.createElement('source');
             s.src = mp4.url;
             s.type = 'video/mp4';
-            Polymer.dom(_this).appendChild(s);
+            Polymer.dom(this).appendChild(s);
             var t = document.createElement('track');
             t.src = 'http://vsr-demo.informatik.tu-chemnitz.de/chroomaplus/YouTubeCaptionService/GetCaption.ashx?v=' + videoId;
             t.kind = 'metadata';
-            Polymer.dom(_this).appendChild(t);
+            Polymer.dom(this).appendChild(t);
           }
-          _this.currentTime = 0;
-          _this.initVideo();
-        });
+          this.currentTime = 0;
+          this.initVideo();
+        }.bind(this));
       },
       initVideo: function() {
         var _this = this, c = Polymer.dom(this).children;
