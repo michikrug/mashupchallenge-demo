@@ -1,0 +1,63 @@
+<dom-module id="semantic-extraction">
+
+  <script>
+    Polymer({
+      is: 'semantic-extraction',
+      fileLocation: 'components/semantic-extraction-element.html',
+      apikey: 'b9543ff024368b60add72be32a27d69ad40b51fc',
+      properties: {
+        text: {
+          type: String,
+          reflectToAttribute: true,
+          observer: 'textChanged'
+        },
+        location: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        },
+        person: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        },
+        organization: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        }
+      },
+      textChanged: function() {
+        var _this = this;
+        window.xhrq.get('http://access.alchemyapi.com/calls/text/TextGetRankedNamedEntities', function (data) {
+          var location = [], person = [], organization = [];
+          data.entities && data.entities.forEach(function(entity) {
+            entity.text = entity.text.replace('.','');
+            switch(entity.type) {
+              case 'City':
+              case 'Country':
+              case 'Continent':
+              case 'StateOrCounty':
+              case 'GeographicFeature':
+                location.push(entity.text);
+                break;
+              case 'Person':
+                person.push(entity.text);
+                break;
+              case 'Company':
+              case 'Organization':
+                organization.push(entity.text);
+                break;
+              default:
+                break;
+            }
+            _this.location = location;
+            _this.person = person;
+            _this.organization = organization;
+          });
+        }, { apikey: this.apikey, outputMode: 'json', text: this.text }, 'json');
+      }
+    });
+  </script>
+
+</dom-module>
