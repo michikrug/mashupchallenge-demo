@@ -174,11 +174,11 @@
           var mp4 = video.getSource("video/mp4", "high");
           if (mp4) {
             var s = document.createElement('source');
-            s.src = mp4.url;
+            s.src = '/proxy/?url=' + encodeURIComponent(mp4.url);
             s.type = 'video/mp4';
             Polymer.dom(this).appendChild(s);
             var t = document.createElement('track');
-            t.src = 'http://vsr-demo.informatik.tu-chemnitz.de/chroomaplus/YouTubeCaptionService/GetCaption.ashx?v=' + videoId;
+            t.src = '/proxy/?url=' + encodeURIComponent('http://vsr-demo.informatik.tu-chemnitz.de/chroomaplus/YouTubeCaptionService/GetCaption.ashx?v=' + videoId);
             t.kind = 'metadata';
             Polymer.dom(this).appendChild(t);
           }
