@@ -114,6 +114,8 @@
     
     <attribute-link source="youtube-search@video-url"         target="smart-video@youtube-url"></attribute-link>
 
+    <attribute-link source="smart-video@text_en"              target="semantic-extraction@text"></attribute-link>
+
     <attribute-link source="semantic-extraction@location"     target="youtube-search@query" transformation="(JSON.parse(source))[0]"></attribute-link>
     <attribute-link source="semantic-extraction@person"       target="youtube-search@query" transformation="(JSON.parse(source))[0]"></attribute-link>
     <attribute-link source="semantic-extraction@organization" target="youtube-search@query" transformation="(JSON.parse(source))[0]"></attribute-link>
