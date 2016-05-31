@@ -87,7 +87,9 @@
         var attributes = [];
         if (element.tagName == 'INPUT' || element.tagName == 'SELECT') attributes.push('value');
         element.properties && Object.getOwnPropertyNames(element.properties).forEach(function(prop) {
-          if (element.properties[prop].reflectToAttribute == true) attributes.push(prop);
+          if (element.properties[prop].reflectToAttribute == true) {
+            attributes.push(prop.replace(/([A-Z])/g, '-$1').toLowerCase());
+          }
         });
         return attributes;
       },
