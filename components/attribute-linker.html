@@ -44,7 +44,7 @@
         <label for="attribute-selection">Select attribute: </label><select id="attribute-selection"></select>
       </div>
       <div class="input-transformation">
-        <label for="transformation">Transformation: </label><input type="text" id="transformation" placeholder="source">
+        <label for="transformation">Transformation: </label><input type="text" id="transformation" placeholder="source" size="40">
       </div>
       <br>
       <button>Select Target</button>
@@ -60,10 +60,6 @@
           type: Boolean,
           reflectToAttribute: true,
           value: false
-        },
-        state: {
-          type: Number,
-          value: 0
         }
       },
       createAttributeLink: function(sc, sa, tc, ta, t) {
