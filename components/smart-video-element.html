@@ -183,7 +183,7 @@
             Polymer.dom(this).appendChild(t);
           }
           this.currentTime = 0;
-          this.initVideo();
+          this.isAttached && this.initVideo();
         }.bind(this));
       },
       initVideo: function() {
@@ -197,8 +197,8 @@
           }
         }
 
-        this.$.video.width = parseInt(this.style.width);
-        this.$.video.height = parseInt(this.style.height);
+        this.$.video.width = this.clientWidth;
+        this.$.video.height = this.offsetHeight;
         this.$.canvas.width = this.$.video.width / 2;
         this.$.canvas.height = this.$.video.height / 2;
         this.activeCues = [];
@@ -253,6 +253,7 @@
           });
 
           this.addEventListener('timeupdate', function() {
+            _this.updateColor();
             _this.currentTime = this.currentTime;
             if (_this._isFirefox && textTrack) _this.cueChanged.bind(textTrack)();
           });
