@@ -1,0 +1,23 @@
+html { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; }
+body { font-size: 14px; font-family: sans-serif; padding: 1em; background-color: #fff; transition: background-color 0.5s; }
+body > div { border: 1px solid #aaa; padding: 1em; vertical-align: top; margin: 1em; text-align: center; display: inline-block; width: calc(100% - 2em - 3px); }
+body > div > * { vertical-align: middle; }
+body > div.w50 { width: calc(50% - 2em - 3px); }
+
+nytimes-news, youtube-search, wikipedia-extract, twitter-tweets, flickr-images { overflow: auto; height: 300px; width: 100%; }
+google-map { width: 300px; height: 300px; }
+smart-video { width: 100%; height: 300px; }
+
+@media (max-width: 900px) {
+  body > div { display: block; width: calc(100% - 2em - 3px) !important; }
+}
+@media (min-width: 1400px) {
+  body > div.w50 { width: calc(33.333% - 2em - 3px); }
+}
+:-webkit-full-screen #container { padding: 1em; }
+:-moz-full-screen #container { padding: 1em; }
+:-ms-fullscreen #container { padding: 1em; }
+:-webkit-full-screen { position: fixed !important; top: 0 !important; left: 0 !important; font-size: 1.5em; width: 100% !important; height: 100% !important; max-height: none !important; max-width: none !important; background: #fff; }
+:-moz-full-screen { position: fixed !important; top: 0 !important; left: 0 !important; font-size: 1.5em; width: 100% !important; height: 100% !important; max-height: none !important; max-width: none !important; background: #fff; }
+:-ms-fullscreen { position: fixed !important; top: 0 !important; left: 0 !important; font-size: 1.5em; width: 100% !important; height: 100% !important; max-height: none !important; max-width: none !important; background: #fff; }
