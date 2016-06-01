@@ -3,7 +3,8 @@
   "version": "0.0.2",
   "description": "Mashup Challenge Demo",
   "scripts": {
-    "start": "node smartcomposition/server.js & node smartcomposition/MessagingServer.js"
+    "start": "node smartcomposition/server.js & node smartcomposition/MessagingServer.js",
+    "postinstall": "bower install"
   },
   "repository": {
     "type": "git",
