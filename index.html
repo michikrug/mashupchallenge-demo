@@ -10,11 +10,13 @@
 
   <script src="smartcomposition/bower_components/webcomponentsjs/webcomponents.min.js"></script>
 
+  <link rel="import" href="smartcomposition/bower_components/polymer/polymer.html">
   <link rel="import" href="smartcomposition/SmartComponent.html">
   <link rel="import" href="smartcomposition/AttributeLink.html">
   <link rel="import" href="smartcomposition/MessagingService.html">
   <link rel="import" href="components/all.html">
   <link rel="import" href="components/attribute-linker.html">
+
   <link rel="stylesheet" href="normalize.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -68,12 +70,12 @@
   <!-- data processing components / no UI -->
   <google-geocoder id="geocode"></google-geocoder>
   <google-geocoder id="geocode_reverse" reverse></google-geocoder>
-  <current-weather></current-weather>
+  <current-weather class="tes tas"></current-weather>
   <semantic-extraction></semantic-extraction>
 
 
   <!-- declarative inter component communication -->
-  <messaging-service endpoint="http://forelle.informatik.tu-chemnitz.de:9001">
+  <messaging-service endpoint="http://localhost:9001">
     <attribute-link source="#gmap1@lat"  target="#gmap2@lat"></attribute-link>
     <attribute-link source="#gmap1@lng"  target="#gmap2@lng"></attribute-link>
     <attribute-link source="#gmap1@zoom" target="#gmap2@zoom"></attribute-link>
@@ -92,7 +94,7 @@
     <attribute-link source="youtube-search@video-url"         target="smart-video@youtube-url"></attribute-link>
 
     <attribute-link source="smart-video@text_en"              target="semantic-extraction@text"></attribute-link>
-    <attribute-link source="smart-video@current-color" target="philips-hue@color"></attribute-link>
+    <attribute-link source="smart-video@current-color"        target="philips-hue@color"></attribute-link>
 
     <attribute-link source="semantic-extraction@location"     target="youtube-search@query" transformation="(JSON.parse(source))[0]"></attribute-link>
     <attribute-link source="semantic-extraction@person"       target="youtube-search@query" transformation="(JSON.parse(source))[0]"></attribute-link>

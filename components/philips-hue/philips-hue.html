@@ -1,8 +1,7 @@
-<!-- <link rel="import" href="./@polymer/polymer.html"> -->
 <link rel="import" href="./philips-hue-light.html">
-<link rel="import" href="../@polymer/iron-pages/iron-pages.html">
-<link rel="import" href="../@polymer/iron-ajax/iron-ajax.html">
-<link rel="import" href="../@polymer/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../../smartcomposition/bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../smartcomposition/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../smartcomposition/bower_components/iron-localstorage/iron-localstorage.html">
 
 <dom-module id="philips-hue">
   <template>
@@ -80,7 +79,10 @@
         type: String,
         computed: '_computeLightsURL(settings.ip, settings.username)'
       },
-      color: String,
+      color: {
+        type: String,
+        reflectToAttribute: true
+      }
     },
 
     _computeLinkURL: function(ip) {

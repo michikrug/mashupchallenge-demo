@@ -15,11 +15,6 @@
   },
   "homepage": "https://github.com/michikrug/mashupchallenge-demo#readme",
   "dependencies": {
-    "@polymer/iron-ajax": "0.0.3",
-    "@polymer/iron-localstorage": "0.0.3",
-    "@polymer/iron-pages": "0.0.3",
-    "@polymer/paper-slider": "0.0.3",
-    "@polymer/paper-toggle-button": "0.0.3",
     "smartcomposition": "git://github.com/michikrug/SmartComposition.git#develop"
   }
 }
