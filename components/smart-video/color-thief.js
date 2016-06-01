@@ -73,7 +73,7 @@ var ColorThief = function () {};
  * */
 ColorThief.prototype.getColor = function(sourceImage, quality) {
     var palette       = this.getPalette(sourceImage, 5, quality);
-    var dominantColor = palette[0];
+    var dominantColor = palette && palette[0];
     return dominantColor;
 };
 
@@ -129,7 +129,7 @@ ColorThief.prototype.getPalette = function(sourceImage, colorCount, quality) {
     // Send array to quantize function which clusters values
     // using median cut algorithm
     var cmap    = MMCQ.quantize(pixelArray, colorCount);
-    var palette = cmap? cmap.palette() : null;
+    var palette = cmap ? cmap.palette() : null;
 
     // Clean up
     image.removeCanvas();
