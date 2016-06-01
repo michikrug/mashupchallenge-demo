@@ -25,7 +25,8 @@
 
   <div class="w50">
     <!--<smart-video><source src="cars2.mkv" type="video/mp4" /></smart-video>-->
-    <smart-video youtube-url="https://www.youtube.com/watch?v=zsg0aSTkkWY"></smart-video>
+    <!--<smart-video youtube-url="https://www.youtube.com/watch?v=zsg0aSTkkWY"></smart-video>-->
+    <smart-video youtube-url="https://www.youtube.com/watch?v=5O7ajur4eLo"></smart-video>
   </div>
 
   <div class="w50">
@@ -68,9 +69,10 @@
   </div>
 
   <!-- data processing components / no UI -->
+  <translate-text from="de" to="en"></translate-text>
   <google-geocoder id="geocode"></google-geocoder>
   <google-geocoder id="geocode_reverse" reverse></google-geocoder>
-  <current-weather class="tes tas"></current-weather>
+  <current-weather></current-weather>
   <semantic-extraction></semantic-extraction>
 
 
@@ -81,19 +83,21 @@
     <attribute-link source="#gmap1@zoom" target="#gmap2@zoom"></attribute-link>
 
     <attribute-link source="#cityselect@value" target="#inpText@value"></attribute-link>
-    <attribute-link source="#inpText@value"    target="google-geocoder@address"></attribute-link>
+    <attribute-link source="#inpText@value"    target="#geocode@address"></attribute-link>
     <attribute-link source="#inpText@value"    target="current-weather@city"></attribute-link>
     <attribute-link source="current-weather@temperature" target="#chart3@value"></attribute-link>
     <attribute-link source="current-weather@temperature" target="#inpTemp@value" transformation="source + ' Degrees'"></attribute-link>
 
-    <attribute-link source="google-geocoder@lat" target="#gmap1@lat"></attribute-link>
-    <attribute-link source="google-geocoder@lng" target="#gmap1@lng"></attribute-link>
-
+    <attribute-link source="#geocode@lat" target="#gmap1@lat"></attribute-link>
+    <attribute-link source="#geocode@lng" target="#gmap1@lng"></attribute-link>
+    
     <attribute-link source="nytimes-news@text"                target="semantic-extraction@text"></attribute-link>
 
     <attribute-link source="youtube-search@video-url"         target="smart-video@youtube-url"></attribute-link>
 
     <attribute-link source="smart-video@text_en"              target="semantic-extraction@text"></attribute-link>
+    <attribute-link source="smart-video@text_de"              target="translate-text@text"></attribute-link>
+    <attribute-link source="translate-text@translated-text"   target="semantic-extraction@text"></attribute-link>
     <attribute-link source="smart-video@current-color"        target="philips-hue@color"></attribute-link>
 
     <attribute-link source="semantic-extraction@location"     target="youtube-search@query" transformation="(JSON.parse(source))[0]"></attribute-link>
