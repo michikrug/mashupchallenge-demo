@@ -3,7 +3,7 @@
   <style>
     :host {
       display: inline-block;
-      transition: background-color 0.05s;
+      transition: background-color 0.1s;
     }
     #video {
       width: 100%;
@@ -15,11 +15,14 @@
 
   <template>
     <video id="video" controls></video>
-    <canvas id="canvas" style="display:none"></canvas>
   </template>
+
+  <script src="color-thief.js"></script>
 
   <script>
   (function() {
+
+    var colorThief = new ColorThief();
 
     var YoutubeVideo = function(id, callback) {
       return window.xhrq.get("http://www.youtube.com/get_video_info?video_id=" + id, function(video_info) {
@@ -135,23 +138,8 @@
         this.initVideo();
       },
       updateColor: function() {
-        var c = this.$.canvas.getContext('2d');
-        var v = this.$.video;
-        c.drawImage(v, 0, 0, v.width / 2, v.height / 2);
-        var frame_data = c.getImageData(0, 0, v.width / 2, v.height / 2).data;
-        var frame_data_length = (frame_data.length / 4) / 4;
-        var pixel_count = 0;
-        var rgb_sums = [0, 0, 0];
-        for(var i = 0; i < frame_data_length; i += 4) {
-          rgb_sums[0] += frame_data[i*4];
-          rgb_sums[1] += frame_data[i*4+1];
-          rgb_sums[2] += frame_data[i*4+2];
-          pixel_count++;
-        }
-        rgb_sums[0] = Math.floor(rgb_sums[0]/pixel_count);
-        rgb_sums[1] = Math.floor(rgb_sums[1]/pixel_count);
-        rgb_sums[2] = Math.floor(rgb_sums[2]/pixel_count);
-        this._setCurrentColor('#' + rgb_sums.map(function(val) {
+        var rgb = colorThief.getColor(this.$.video);
+        this._setCurrentColor('#' + rgb.map(function(val) {
           return ('00' + val.toString(16)).slice(-2)
         }).join(''));
         this.style.background = this.currentColor;
@@ -201,8 +189,6 @@
 
         this.$.video.width = this.clientWidth;
         this.$.video.height = this.offsetHeight;
-        this.$.canvas.width = this.$.video.width / 2;
-        this.$.canvas.height = this.$.video.height / 2;
         this.activeCues = [];
 
         this.cueChanged = function() {
