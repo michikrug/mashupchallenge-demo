@@ -3,7 +3,7 @@
   <style>
     :host {
       display: inline-block;
-      transition: background-color 0.05s;
+      transition: background-color 0.1s;
     }
     #video {
       width: 100%;
@@ -15,7 +15,6 @@
 
   <template>
     <video id="video" controls></video>
-    <canvas id="canvas" style="display:none"></canvas>
   </template>
 
   <script src="color-thief.js"></script>
@@ -190,8 +189,6 @@
 
         this.$.video.width = this.clientWidth;
         this.$.video.height = this.offsetHeight;
-        this.$.canvas.width = this.$.video.width / 2;
-        this.$.canvas.height = this.$.video.height / 2;
         this.activeCues = [];
 
         this.cueChanged = function() {
