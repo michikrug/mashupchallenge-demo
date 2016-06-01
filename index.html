@@ -31,7 +31,7 @@
       <smart-video youtube-url="https://www.youtube.com/watch?v=5O7ajur4eLo"></smart-video>
     </div>
 
-    <div class="col col-20 app">
+    <div class="col col-30 app">
       <youtube-search query="Lugano"></youtube-search>
     </div>
   </div>
@@ -43,17 +43,20 @@
       <div class="row">
         <div class="col horizontal app" style="white-space: nowrap;">
           <google-map id="gmap1" lat="52.1" lng="12.3" zoom="11"></google-map>
-          <simple-chart id="chart3" type="temperature" value="25" min="-10" max="50" style="width:30px;height:200px"></simple-chart>
-          <input id="inpTemp" type="text" readonly value="25 Degrees" style="width:80px">
         </div>
 
-        <div class="col app"">
-          <google-map id="gmap2" lat="52.1" lng="12.3" map-type="satellite"></google-map><br>
+        <div class="col app">
+          <simple-chart id="chart3" type="temperature" value="25" min="-10" max="50" style="width:30px;height:200px"></simple-chart><br>
+          <input id="inpTemp" type="text" readonly value="25 Degrees" style="width:80px; border:none"><br>
           <select id="cityselect" onchange="this.setAttribute('value', this.value)">
             <option>Chemnitz</option>
             <option>Lugano</option>
-          </select>
+          </select><br>
           <input id="inpText" type="text" placeholder="Location" onchange="this.setAttribute('value', this.value)">
+        </div>
+
+        <div class="col app"">
+          <google-map id="gmap2" lat="52.1" lng="12.3" map-type="satellite"></google-map>
         </div>
       </div>
     </div>
