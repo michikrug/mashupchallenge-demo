@@ -27,6 +27,10 @@
   </div>
 
   <div class="w50">
+    <philips-hue></philips-hue>
+  </div>
+
+  <div class="w50">
     <google-map id="gmap1" lat="52.1" lng="12.3" zoom="11"></google-map>
     <simple-chart id="chart3" type="temperature" value="25" min="-10" max="50" style="width:30px;height:200px"></simple-chart>
     <input id="inpTemp" type="text" readonly value="25 Degrees" style="width:80px">
@@ -68,7 +72,7 @@
   <semantic-extraction></semantic-extraction>
 
 
-  <!-- declarative inter component communication --> 
+  <!-- declarative inter component communication -->
   <messaging-service endpoint="http://forelle.informatik.tu-chemnitz.de:9001">
     <attribute-link source="#gmap1@lat"  target="#gmap2@lat"></attribute-link>
     <attribute-link source="#gmap1@lng"  target="#gmap2@lng"></attribute-link>
@@ -84,10 +88,11 @@
     <attribute-link source="google-geocoder@lng" target="#gmap1@lng"></attribute-link>
 
     <attribute-link source="nytimes-news@text"                target="semantic-extraction@text"></attribute-link>
-    
+
     <attribute-link source="youtube-search@video-url"         target="smart-video@youtube-url"></attribute-link>
 
     <attribute-link source="smart-video@text_en"              target="semantic-extraction@text"></attribute-link>
+    <attribute-link source="smart-video@current-color" target="philips-hue@color"></attribute-link>
 
     <attribute-link source="semantic-extraction@location"     target="youtube-search@query" transformation="(JSON.parse(source))[0]"></attribute-link>
     <attribute-link source="semantic-extraction@person"       target="youtube-search@query" transformation="(JSON.parse(source))[0]"></attribute-link>

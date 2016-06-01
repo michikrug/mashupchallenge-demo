@@ -1,0 +1,191 @@
+<!-- <link rel="import" href="./@polymer/polymer.html"> -->
+<link rel="import" href="./philips-hue-light.html">
+<link rel="import" href="../@polymer/iron-pages/iron-pages.html">
+<link rel="import" href="../@polymer/iron-ajax/iron-ajax.html">
+<link rel="import" href="../@polymer/iron-localstorage/iron-localstorage.html">
+
+<dom-module id="philips-hue">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <iron-localstorage name="philips-hue-username"
+      value="{{settings}}"
+      on-iron-localstorage-load-empty="initializeSettings"
+      on-iron-localstorage-load="settingsLoaded">
+    </iron-localstorage>
+
+    <iron-ajax id="authReq"
+      url="{{linkURL}}" method="POST"
+      content-type="application/json" body='{"devicetype":"philips-hue-component"}'
+      on-response="handleLinkResponse">
+    </iron-ajax>
+
+    <iron-ajax id="lightsReq"
+      url="{{lightsURL}}" method="GET"
+      on-response="handleLightsResponse">
+    </iron-ajax>
+
+    <iron-pages id="pages" attr-for-selected="id" selected="initializing">
+      <!-- initializing -->
+      <section id="initializing">
+        initializing ...
+      </section>
+
+      <!-- setup endpoint -->
+      <section id="settings">
+        <input type="text" value="{{settings.ip::input}}">
+
+        <button on-click="linkBridge">link</button>
+      </section>
+
+      <!-- authenticate / press button to link -->
+      <section id="linkbridge">
+        <img src="images/linkbridge.svg" widht="128" height="128">
+
+        <button on-click="unlinkBridge">cancel</button>
+      </section>
+
+      <!-- light controls -->
+      <section id="lights">
+        <h3>Lights</h3>
+
+        <template is="dom-repeat" items="{{lights}}">
+          <philips-hue-light settings="{{settings}}"
+            light-id="{{item.id}}" name="{{item.name}}" state="{{item.state}}"
+            color="{{color}}">
+          </philips-hue-light>
+        </template>
+
+        <button on-click="unlinkBridge">unlink bridge</button>
+      </section>
+    </iron-pages>
+  </template>
+
+  <script>
+  Polymer({
+    is: 'philips-hue',
+
+    properties: {
+      settings: Object,
+      lights: { type: Array, value: [] },
+      linkURL: {
+        type: String,
+        computed: '_computeLinkURL(settings.ip)'
+      },
+      lightsURL: {
+        type: String,
+        computed: '_computeLightsURL(settings.ip, settings.username)'
+      },
+      color: String,
+    },
+
+    _computeLinkURL: function(ip) {
+      return 'http://' + this.settings.ip + '/api'
+    },
+
+    _computeLightsURL: function(ip, username) {
+      return 'http://' + this.settings.ip + '/api/' + username + '/lights'
+    },
+
+    initializeSettings: function() {
+      this.settings = { username: null }
+      this.settingsLoaded()
+    },
+
+    settingsLoaded: function() {
+      if (this.settings.ip && this.settings.username) {
+        this.openLightsPage()
+      } else {
+        this.openSettingsPage()
+      }
+    },
+
+    created: function() {
+      this.state = 'unlinked'
+    },
+
+    linkBridge: function() {
+      this.$.authReq.generateRequest()
+    },
+
+    unlinkBridge: function() {
+      this.settings = {}
+      this.splice('lights', 0, this.lights.length)
+      this.openSettingsPage()
+    },
+
+    handleError: function(res) {
+      if (Array.isArray(res) && 'error' in res[0]) {
+        var err = res[0].error
+
+        switch (err.type) {
+        case 1: // unauthorized
+          this.openSettingsPage()
+          break
+        case 101:
+          this.openLinkBridgePage()
+          break
+        default:
+          alert(err.description)
+          console.error(err.description)
+          break
+        }
+
+        return true
+      }
+
+      return false
+    },
+
+    handleLinkResponse: function(e, req) {
+      if (this.handleError(req.response)) {
+        return
+      }
+
+      var res = req.response[0]
+      this.set('settings.username', res.success.username)
+      this.state = 'linked'
+
+      this.openLightsPage()
+    },
+
+    handleLightsResponse: function(e, req) {
+      if (this.handleError(req.response)) {
+        return
+      }
+
+      for (var id in req.response) {
+        var light = req.response[id]
+        if (!light.state.reachable) {
+          continue
+        }
+        this.push('lights', {
+          id: id,
+          name: light.name,
+          state: light.state
+        })
+      }
+    },
+
+    openSettingsPage() {
+      this.$.pages.select('settings')
+    },
+
+    openLinkBridgePage() {
+      this.$.pages.select('linkbridge')
+      this.async(function() {
+        this.$.authReq.generateRequest()
+      }, 1500)
+    },
+
+    openLightsPage() {
+      this.$.pages.select('lights')
+      this.$.lightsReq.generateRequest()
+    }
+  })
+  </script>
+</dom-module>

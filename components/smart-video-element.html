@@ -151,7 +151,9 @@
         rgb_sums[0] = Math.floor(rgb_sums[0]/pixel_count);
         rgb_sums[1] = Math.floor(rgb_sums[1]/pixel_count);
         rgb_sums[2] = Math.floor(rgb_sums[2]/pixel_count);
-        this._setCurrentColor('rgb(' + rgb_sums.join(',') + ')');
+        this._setCurrentColor('#' + rgb_sums.map(function(val) {
+          return ('00' + val.toString(16)).slice(-2)
+        }).join(''));
         this.style.background = this.currentColor;
       },
       youtubeUrlChanged: function() {

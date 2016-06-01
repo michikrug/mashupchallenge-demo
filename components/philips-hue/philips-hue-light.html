@@ -1,0 +1,299 @@
+<!-- <link rel="import" href="./@polymer/polymer.html"> -->
+<link rel="import" href="../@polymer/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../@polymer/paper-slider/paper-slider.html">
+
+<dom-module id="philips-hue-light">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <iron-ajax id="syncReq" url="{{syncURL}}" method="GET"
+      on-response="handleSyncResponse">
+    </iron-ajax>
+
+    <iron-ajax id="onReq" url="{{updateURL}}" method="PUT"
+      content-type="application/json" body='{"on":true}'
+      on-response="handleUpdateResponse">
+    </iron-ajax>
+
+    <iron-ajax id="offReq" url="{{updateURL}}" method="PUT"
+      content-type="application/json" body='{"on":false}'
+      on-response="handleUpdateResponse">
+    </iron-ajax>
+
+    <iron-ajax id="brightnessReq" url="{{updateURL}}" method="PUT"
+      content-type="application/json"
+      on-response="handleUpdateResponse">
+    </iron-ajax>
+
+    <iron-ajax id="hslReq" url="{{updateURL}}" method="PUT"
+      content-type="application/json"
+      on-response="handleUpdateResponse">
+    </iron-ajax>
+
+    <h4>{{name}}</h4>
+
+    <paper-toggle-button id="onOffToggle" checked="{{state.on}}"
+      on-change="onOffChanged">
+    </paper-toggle-button>
+
+    <paper-slider id="brightnessSlider" value="{{state.bri}}"
+      min="1" max="255"
+      on-change="brightnessChanged">
+    </paper-slider>
+
+    <!-- <input id="colorPicker" type="color" value="{{color::change}}" on-change="colorChanged"> -->
+  </template>
+
+  <script>
+  Polymer({
+    is: 'philips-hue-light',
+
+    properties: {
+      lightId: String,
+      name: String,
+      state: {
+        type: Object,
+        observer: '_stateChanged'
+      },
+      settings: Object,
+      color: {
+        type: String,
+        observer: 'colorChanged'
+      },
+      syncURL: {
+        type: String,
+        computed: '_computeSyncURL(settings.ip, settings.username, lightId)'
+      },
+      updateURL: {
+        type: String,
+        computed: '_computeUpdateURL(settings.ip, settings.username, lightId)'
+      },
+    },
+
+    attached: function() {
+      this.polling = true
+      var interval = 3000
+
+      this.async(function sync() {
+        this.$.syncReq.generateRequest()
+
+        if (this.polling) {
+          this.async(sync, interval)
+        }
+      }, interval)
+    },
+
+    detached: function() {
+      this.polling = false
+    },
+
+    _computeSyncURL: function(ip, username, id) {
+      return 'http://' + ip + '/api/' + username + '/lights/' + id
+    },
+
+    _computeUpdateURL: function(ip, username, id) {
+      return this._computeSyncURL(ip, username, id) + '/state'
+    },
+
+    onOffChanged: function() {
+      this.$.onOffToggle.disabled = true
+
+      if (this.state.on) {
+        this.$.onReq.generateRequest()
+      } else {
+        this.$.offReq.generateRequest()
+      }
+    },
+
+    brightnessChanged: function() {
+      if (!this.updateURL) {
+        return
+      }
+
+      this.$.brightnessSlider.disabled = true
+
+      this.$.brightnessReq.body = JSON.stringify({bri: this.state.bri})
+      this.$.brightnessReq.generateRequest()
+    },
+
+    colorChanged: function() {
+      // this.debounce('colorChanged', this.updateColor, 50)
+
+      // only 1 update per 500ms
+      var currentTime = new Date().getTime()
+      if (this.previousTime) {
+        var delta = currentTime - this.previousTime
+        if (delta < 500) {
+          return
+        }
+      }
+
+      this.previousTime = currentTime
+      this.updateColor()
+    },
+
+    updateColor: function() {
+      var components = this.color.match(/#?([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})/i)
+      if (!components) {
+        return
+      }
+
+      // convert hex to rgb components (0-1)
+      var rgb = components.slice(1, 4).map(function(val) {
+        return parseInt(val, 16) / 255
+      })
+
+      // from https://github.com/Qix-/color-convert/blob/master/conversions.js
+      var min = Math.min.apply(Math, rgb)
+      var max = Math.max.apply(Math, rgb)
+      var delta = max - min
+
+      var r = rgb[0], g = rgb[1], b = rgb[2]
+      var h, s, l
+
+      if (max === min) {
+        h = 0
+      } else if (r === max) {
+        h = (g - b) / delta
+      } else if (g === max) {
+        h = 2 + (b - r) / delta
+      } else if (b === max) {
+        h = 4 + (r - g) / delta
+      }
+
+      h = Math.min(h * 60, 360)
+
+      if (h < 0) {
+        h += 360
+      }
+
+      l = (min + max) / 2
+
+      if (max === min) {
+        s = 0
+      } else if (l <= 0.5) {
+        s = delta / (max + min)
+      } else {
+        s = delta / (2 - max - min)
+      }
+
+      // convert to philips hue value ranges
+      h *= 182
+      s *= 255
+      l *= 255
+
+      this.set('state.hue', Math.round(h))
+      this.set('state.sat', Math.round(s))
+      this.set('state.bri', Math.round(l))
+
+      // this.$.colorPicker.disabled = true
+
+      this.$.hslReq.body = JSON.stringify({
+        hue: this.state.hue,
+        sat: this.state.sat,
+        bri: this.state.bri,
+      })
+      this.$.hslReq.generateRequest()
+    },
+
+    _stateChanged: function() {
+      // this.syncColor()
+    },
+
+    syncColor: function() {
+      // convert from philips hue value ranges
+      var h = this.state.hue / 182 / 360
+      var s = this.state.sat / 255
+      var l = this.state.bri / 255
+
+      var t1, t2, t3, val
+
+      if (s === 0) {
+        val = l * 255
+        return [val, val, val]
+      }
+
+      if (l < 0.5) {
+        t2 = l * (1 + s)
+      } else {
+        t2 = l + s - l * s
+      }
+
+      t1 = 2 * l - t2
+
+      var rgb = [0, 0, 0]
+      for (var i = 0; i < 3; i++) {
+        t3 = h + 1 / 3 * -(i - 1)
+        if (t3 < 0) {
+          t3++
+        }
+        if (t3 > 1) {
+          t3--
+        }
+
+        if (6 * t3 < 1) {
+          val = t1 + (t2 - t1) * 6 * t3
+        } else if (2 * t3 < 1) {
+          val = t2
+        } else if (3 * t3 < 2) {
+          val = t1 + (t2 - t1) * (2 / 3 - t3) * 6
+        } else {
+          val = t1
+        }
+
+        rgb[i] = val
+      }
+
+      // rgb (0 - 1) to hex
+      var hex = '#' + rgb.map(function(val) {
+        return ('00' + Math.min(255, Math.round(val * 255)).toString(16)).slice(-2)
+      }).join('')
+
+      this.color = hex
+    },
+
+    handleUpdateResponse: function(e, req) {
+      req.response.forEach(function(res) {
+        if ('error' in res) {
+          switch (res.error.type) {
+          default:
+            alert(res.error.description)
+            console.error(res.error.description)
+            break
+          }
+        } else {
+          for (var path in res.success) {
+            var value = res.success[path]
+            switch (path) {
+            case '/lights/' + this.lightId + '/state/on':
+              this.set('state.on', value)
+              this.$.onOffToggle.disabled = false
+              break
+            case '/lights/' + this.lightId + '/state/bri':
+              this.set('state.bri', value)
+              this.$.brightnessSlider.disabled = false
+              break
+            case '/lights/' + this.lightId + '/state/hue':
+              this.set('state.hue', value)
+              // this.$.colorPicker.disabled = false
+              break
+            case '/lights/' + this.lightId + '/state/sat':
+              this.set('state.sat', value)
+              // this.$.colorPicker.disabled = false
+              break
+            }
+          }
+        }
+      }, this)
+    },
+
+    handleSyncResponse: function(e, req) {
+      this.set('state', req.response.state)
+    }
+  })
+  </script>
+</dom-module>
