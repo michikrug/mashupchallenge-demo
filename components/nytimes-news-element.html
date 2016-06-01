@@ -10,6 +10,7 @@
       overflow: auto;
       position: relative;
       text-align: left;
+      padding-top: 1em;
     }
     #container ul {
       list-style: none;
@@ -28,8 +29,6 @@
 
   <template>
     <div id="container">
-      <content></content>
-      <h3>New York Times</h3>
       <select on-change="changeFeed">
         <option value="http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml">NYTimes.com Home Page (U.S.)</option>
         <option value="http://rss.nytimes.com/services/xml/rss/nyt/InternationalHome.xml" selected>NYTimes.com Home Page (International Edition)</option>
