@@ -1,7 +1,7 @@
 {
   "name": "mashupchallenge-demo",
-  "version": "0.0.2",
-  "description": "Mashup Challenge Demo",
+  "version": "0.0.2a",
+  "description": "Mashup Challenge Demo for vsr-demo deployment",
   "scripts": {
     "start": "node smartcomposition/server.js & node smartcomposition/MessagingServer.js",
     "postinstall": "bower install"
@@ -16,6 +16,6 @@
   },
   "homepage": "https://github.com/michikrug/mashupchallenge-demo#readme",
   "dependencies": {
-    "smartcomposition": "git://github.com/michikrug/SmartComposition.git#develop"
+    "smartcomposition": "git://github.com/michikrug/SmartComposition.git#vsr-demo"
   }
 }
