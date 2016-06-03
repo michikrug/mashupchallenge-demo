@@ -99,7 +99,7 @@
         var _this = this;
         var form = this.$.form;
         var ov = this.$.overlay;
-        var elements = document.body.querySelectorAll('*:not(script):not(h2):not(br):not(button):not(option):not(label):not(track):not(source):not(div):not(messaging-service):not(attribute-link):not(attribute-linker)');
+        var elements = document.body.querySelectorAll('*:not(script):not(a):not(some-content):not(fieldset):not(legend):not(h2):not(br):not(button):not(option):not(label):not(track):not(source):not(div):not(messaging-service):not(attribute-link):not(attribute-linker)');
 
         this.$.activate.addEventListener('click', function(e) { _this.active = true; });
         this.$.deactivate.addEventListener('click', function(e) { _this.active = false; });
@@ -148,13 +148,14 @@
           });
           element.addEventListener('mouseover', function() {
             if (!_this.active) return;
+            this._oldStyle = { border: this.style.border || '', background: this.style.background || '' };
             this.style.border = '2px solid #DD4A68';
             this.style.background = 'rgba(221, 74, 104, .5)';
           });
           element.addEventListener('mouseout', function() {
             if (!_this.active) return;
-            this.style.border = 'initial';
-            this.style.background = 'initial';
+            this.style.border = this._oldStyle.border;
+            this.style.background = this._oldStyle.background;
           });
         }
       },
