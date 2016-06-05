@@ -22,8 +22,8 @@
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,100,500' rel='stylesheet' type='text/css'>
 </head>
 <body>
-  <attribute-linker></attribute-linker>
-
+  <attribute-linker></attribute-linker>&nbsp;
+  <label>Device Name:</label> <input type="text" id="inpDeviceName" placeholder="Device Name" onchange="this.setAttribute('value', this.value)">&nbsp;
   <component-selector>
     <option value="text-input">TEXT INPUT</option>
     <option value="simple-chart">SIMPLE CHART</option>
@@ -41,84 +41,9 @@
     <option value="philips-hue">PHILIPS HUE</option>
   </component-selector><br>
 
-  <div class="row">
-    <div class="col app">
-      <!--<smart-video><source src="cars2.mkv" type="video/mp4" /></smart-video>-->
-      <!--<smart-video youtube-url="https://www.youtube.com/watch?v=zsg0aSTkkWY"></smart-video>-->
-      <smart-video youtube-url="https://www.youtube.com/watch?v=5O7ajur4eLo"></smart-video>
-    </div>
 
-    <div class="col col-30 app">
-      <youtube-search query="Lugano"></youtube-search>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col group">
-      <h2>Geographical Information</h2>
-
-      <div class="row">
-        <div class="col horizontal app" style="white-space: nowrap;">
-          <google-map id="gmap1" lat="52.1" lng="12.3" zoom="11"></google-map>
-        </div>
-
-        <div class="col app">
-          <simple-chart id="chart3" type="temperature" value="25" min="-10" max="50" style="width:30px;height:200px"></simple-chart><br>
-          <input id="inpTemp" type="text" readonly value="25 Degrees" style="width:90px; text-align:center; border:none"><br>
-          <select id="cityselect" onchange="this.setAttribute('value', this.value)">
-            <option>Chemnitz</option>
-            <option>Lugano</option>
-            <option>New York</option>
-            <option>London</option>
-          </select><br>
-          <input id="inpText" type="text" placeholder="Location" onchange="this.setAttribute('value', this.value)">
-        </div>
-
-        <div class="col app"">
-          <google-map id="gmap2" lat="52.1" lng="12.3" map-type="satellite"></google-map>
-        </div>
-      </div>
-    </div>
-
-    <div class="col group">
-      <h2>Images</h2>
-
-      <div class="app" style="width:calc(100% - 2em - 3px)">
-        <flickr-images></flickr-images>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col app">
-      <h2>Wikipedia</h2>
-      <wikipedia-extract></wikipedia-extract>
-    </div>
-
-    <div class="col app">
-      <h2>Twitter</h2>
-      <twitter-tweets></twitter-tweets>
-    </div>
-
-    <div class="col app">
-      <h2>New York Times</h2>
-      <nytimes-news></nytimes-news>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col col-25 app">
-      <philips-hue></philips-hue>
-    </div>
-  </div>
-
-  <!-- data processing components / no UI -->
-  <translate-text from="de" to="en"></translate-text>
-  <google-geocoder id="geocode"></google-geocoder>
-  <google-geocoder id="geocode_reverse" reverse></google-geocoder>
-  <current-weather></current-weather>
-  <semantic-extraction></semantic-extraction>
-
+  <attribute-link source="#inpDeviceName@value"  target="messaging-service@client-name"></attribute-link>
+  <attribute-link target="#inpDeviceName@value"  source="messaging-service@client-name"></attribute-link>
 
   <!-- declarative inter component communication -->
   <messaging-service endpoint="http://localhost:9001">
