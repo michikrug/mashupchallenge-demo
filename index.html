@@ -22,8 +22,8 @@
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,100,500' rel='stylesheet' type='text/css'>
 </head>
 <body>
-  <attribute-linker></attribute-linker>
-
+  <attribute-linker></attribute-linker>&nbsp;
+  <label>Device Name:</label> <input type="text" id="inpDeviceName" placeholder="Device Name" onchange="this.setAttribute('value', this.value)">&nbsp;
   <component-selector>
     <option value="text-input">TEXT INPUT</option>
     <option value="simple-chart">SIMPLE CHART</option>
@@ -40,6 +40,9 @@
     <option value="current-weather">CURRENT WEATHER</option>
     <option value="philips-hue">PHILIPS HUE</option>
   </component-selector><br>
+
+  <attribute-link source="#inpDeviceName@value"  target="messaging-service@client-name"></attribute-link>
+  <attribute-link target="#inpDeviceName@value"  source="messaging-service@client-name"></attribute-link>
 
   <div class="row">
     <div class="col app">
