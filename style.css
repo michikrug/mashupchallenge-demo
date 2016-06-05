@@ -2,10 +2,11 @@ html { box-sizing: border-box; }
 *, *:before, *:after { box-sizing: inherit; }
 body { font-size: 14px; font-family: 'Roboto', sans-serif; padding: 1em; background-color: #fff; transition: background-color 0.5s; }
 
-.app { border: 1px solid #aaa; padding: 1em; vertical-align: top; margin: 1em; text-align: center; display: inline-block; width: calc(100% - 2em - 3px); flex-grow: 1; }
+.app { border: 1px solid #aaa; padding: 1em; vertical-align: top; margin: 1em; text-align: center; display: inline-block; flex-grow: 1; }
 .group { text-align: center; }
 .app > h2, .group > h2 { font-weight: 200; margin-bottom: 0 }
 .app > h2 { margin-top: 0 }
+some-content.app > h2 { margin-bottom: 1em; }
 
 nytimes-news, youtube-search, wikipedia-extract, twitter-tweets, flickr-images { overflow: auto; height: 300px; width: 100%; }
 google-map { width: 300px; height: 300px; }
