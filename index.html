@@ -23,7 +23,7 @@
 </head>
 <body>
   <attribute-linker></attribute-linker>&nbsp;
-  <label>Device Name:</label> <input type="text" id="inpDeviceName" placeholder="Device Name" onchange="this.setAttribute('value', this.value)">&nbsp;
+  <input type="text" id="inpDeviceName" placeholder="Device Name" onchange="this.setAttribute('value', this.value)">&nbsp;
   <component-selector>
     <option value="text-input">TEXT INPUT</option>
     <option value="simple-chart">SIMPLE CHART</option>
@@ -132,6 +132,7 @@
     <attribute-link source="#cityselect@value" target="#inpText@value"></attribute-link>
     <attribute-link source="#inpText@value"    target="#geocode@address"></attribute-link>
     <attribute-link source="#inpText@value"    target="current-weather@city"></attribute-link>
+    <attribute-link source="#inpText@value"    target="wikipedia-extract@query"></attribute-link>
     <attribute-link source="current-weather@temperature" target="#chart3@value"></attribute-link>
     <attribute-link source="current-weather@temperature" target="#inpTemp@value" transformation="source + ' Degrees'"></attribute-link>
 
